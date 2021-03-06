@@ -12,7 +12,8 @@
 			"args": [
 				"runserver"
 			],
-			"django": true
+			"django": true,
+			"justMyCode": false // 장고 패키지코드를 보기 위해서 추가한다.
 		}
 	]
 }
