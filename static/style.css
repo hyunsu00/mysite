@@ -1,9 +1,13 @@
 /* style.css */
+/* 부트스트랩을 사용하게 되었으니 style.css 파일의 내용 비움
+이후 부트스트랩으로 표현할 수 없는 스타일을 위해 사용 목적으로 지우지는 않음 */
 
+/* 
 textarea {
   width: 100%;
 }
 
 input[type="submit"] {
   margin-top: 10px;
-}
+} 
+*/

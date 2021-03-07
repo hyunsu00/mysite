@@ -1,0 +1,27 @@
+<!-- base.html -->
+<!-- body 엘리먼트에 % block content %와 % endblock % 템플릿 태그가 있다. 
+	바로 이 부분이 이후 base.html 템플릿 파일을 상속한 파일에서 구현해야 하는 영역이 된다. -->
+
+{% load static %}
+<!doctype html>
+<html lang="ko">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+	<!-- pybo CSS -->
+	<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+	<title>Hello, pybo!</title>
+</head>
+
+<body>
+	<!-- 기본 템플릿 안에 삽입될 내용 Start -->
+	{% block content %}
+	{% endblock %}
+	<!-- 기본 템플릿 안에 삽입될 내용 End -->
+</body>
+
+</html>
