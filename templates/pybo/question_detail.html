@@ -1,5 +1,10 @@
 <!-- question_detail.html -->
 
+<!-- 스태틱 파일을 사용하기위해 템플릿 파일 맨 위에 {% load static %} 태그를 삽입하고, 
+	link 엘리먼트 href 속성에 {% static 'style.css' %}를 적자. -->
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+
 <h1>{{ question.subject }}</h1>
 
 <div>{{ question.content }}</div>
