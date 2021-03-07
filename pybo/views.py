@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views import generic
 
 from .models import Question
+from django.utils import timezone
 
 def index(request):
     # order_by 함수는 조회한 데이터를 특정 속성으로 정렬하며, '-create_date'는 
@@ -35,4 +36,12 @@ def detail(request, question_id):
 #     pybo 내용 출력
 #     """
 #     model = Question
+
+def answer_create(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    question.answer_set.create(content=request.POST.get('content'), create_date=timezone.now())
+    # ==
+    # answer = Answer(question=question, content=request.POST.get('content'), create_date=timezone.now())
+    # answer.save()
+    return redirect('pybo:detail', question_id=question_id)
 

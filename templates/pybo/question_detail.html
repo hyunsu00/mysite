@@ -3,3 +3,22 @@
 <h1>{{ question.subject }}</h1>
 
 <div>{{ question.content }}</div>
+
+<!-- 등록된 답변 표시하기 -->
+<h5>{{ question.answer_set.count }}개의 답변이 있습니다.</h5>
+<div>
+  <ul>
+    {% for answer in question.answer_set.all %}
+    <li>{{ answer.content }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!-- % csrf_token %}는 form 엘리먼트를 통해 전송된 데이터(답변)가 실제로 
+	웹 브라우저에서 작성된 데이터인지 판단하는 검사기 역할을 한다. 
+	그러므로 <form ...> 태그 바로 밑에 {% csrf_token %}을 항상 입력해야 한다. -->
+<form action="{% url 'pybo:answer_create' question.id %}" method="post">
+  {% csrf_token %}
+  <textarea name="content" id="content" rows="15"></textarea>
+  <input type="submit" value="답변등록" />
+</form>

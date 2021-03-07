@@ -8,6 +8,7 @@ app_name = 'pybo' # 네임스페이스 정의
 urlpatterns = [
     path('', views.index, name = 'index'), # == path('', views.IndexView.as_view()),
     path('<int:question_id>/', views.detail, name = 'detail'), # == path('<int:pk>/', views.DetailView.as_view()),
+    path('answer/create/<int:question_id>/', views.answer_create, name='answer_create'),
 ]
     
     
