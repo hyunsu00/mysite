@@ -38,6 +38,17 @@
 	그러므로 <form ...> 태그 바로 밑에 {% csrf_token %}을 항상 입력해야 한다. -->
 	<form action="{% url 'pybo:answer_create' question.id %}" method="post" class="my-3">
 		{% csrf_token %}
+		<!-- 질문 상세 템플릿에 오류 표시 영역을 추가하자. -->
+		{% if form.errors %}
+		<div class="alert alert-danger" role="alert">
+			{% for field in form %}
+			{% if field.errors %}
+			<strong>{{ field.label }}</strong>
+			{{ field.errors }}
+			{% endif %}
+			{% endfor %}
+		</div>
+		{% endif %}
 		<div class="form-group">
 			<textarea name="content" id="content" class="form-control" rows="10"></textarea>
 		</div>

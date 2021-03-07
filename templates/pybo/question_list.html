@@ -34,6 +34,9 @@
 			{% endif %}
 		</tbody>
 	</table>
+	<!-- a 엘리먼트에 href 속성으로 질문 등록 URL을 % url 'pybo:question_create' %처럼 추가하고 
+		부트스트랩 클래스 "btn btn-primary"를 지정했다. -->
+	<a href="{% url 'pybo:question_create' %}" class="btn btn-primary">질문 등록하기</a>
 </div>
 
 {% endblock %}
