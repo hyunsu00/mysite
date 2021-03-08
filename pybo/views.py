@@ -6,15 +6,29 @@ from .models import Question
 from django.utils import timezone
 from .forms import QuestionForm, AnswerForm
 
+# 페이징 기능 구현
+from django.core.paginator import Paginator
+
+
 def index(request):
-    # order_by 함수는 조회한 데이터를 특정 속성으로 정렬하며, '-create_date'는 
+
+    # 입력 파라미터
+    page = request.GET.get('page', '1')  # 페이지
+
+    # order_by 함수는 조회한 데이터를 특정 속성으로 정렬하며, '-create_date'는
     # - 기호가 앞에 붙어 있으므로 작성일시의 역순을 의미한다.
     question_list = Question.objects.order_by('-create_date')
-    context = {'question_list': question_list}
 
-    # render 함수는 context에 있는 Question 모델 데이터 question_list를 
+    # 페이징처리
+    paginator = Paginator(question_list, 10)  # 페이지당 10개씩 보여주기
+    page_obj = paginator.get_page(page)
+
+    context = {'question_list': page_obj}
+
+    # render 함수는 context에 있는 Question 모델 데이터 question_list를
     # pybo/question_list.html 파일에 적용하여 HTML 코드로 변환한다.
     return render(request, 'pybo/question_list.html', context)
+
 
 def detail(request, question_id):
     """
@@ -55,6 +69,8 @@ def answer_create(request, question_id):
 
 # URL 매핑에 의해 실행될 views.question_create 함수를 작성
 # {'form': form}은 템플릿에서 폼 엘리먼트를 생성할 때 사용
+
+
 def question_create(request):
     """
     pybo 질문등록
@@ -93,5 +109,3 @@ def question_create(request):
 
     context = {'form': form}
     return render(request, 'pybo/question_form.html', context)
-
-
