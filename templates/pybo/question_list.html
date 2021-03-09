@@ -3,6 +3,7 @@
 	그리고 % block content %와 % endblock % 사이에 question_detail.html 파일에서만 사용할 내용을 작성했다. 
 	이제 question_list.html은 base.html을 상속받았으므로 표준 HTML 구조를 갖추게 되었다. -->
 {% extends 'base.html' %} 
+{% load pybo_filter %}
 {% block content %}
 
 <!-- container, my-3, thead-dark 등이 바로 부트스트랩이 제공하는 클래스 -->
@@ -22,7 +23,13 @@
     {% if question_list %} 
       {% for question in question_list %}
         <tr>
-          <td>{{ forloop.counter }}</td>
+          <td>
+            <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
+            <!-- question_list.paginator.count : 전체 게시물 개수
+            question_list.start_index : 시작 인덱스(1부터 시작)
+            forloop.counter0 : 루프 내의 현재 인덱스(forloop.counter0는 0부터, forloop.counter는 1부터 시작) -->
+            {{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}
+          </td>
           <td>
             <a href="{% url 'pybo:detail' question.id %}">{{ question.subject }}</a>
           </td>
