@@ -31,9 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'pybo.apps.PyboConfig', # 추가된 App
+    'pybo.apps.PyboConfig',  # 추가된 App
+    'common.apps.CommonConfig',  # 추가된 App
     'django.contrib.admin',
-    'django.contrib.auth',
+    'django.contrib.auth',  # 로그인 · 로그아웃
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # HTML 파일
+        'DIRS': [BASE_DIR / 'templates'],  # HTML 파일
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -104,9 +105,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'ko-kr' # 언어
+LANGUAGE_CODE = 'ko-kr'  # 언어
 
-TIME_ZONE = 'Asia/Seoul' # 시간대
+TIME_ZONE = 'Asia/Seoul'  # 시간대
 
 USE_I18N = True
 
@@ -123,3 +124,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# 로그인/로그아웃 성공후 이동하는 URL
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
