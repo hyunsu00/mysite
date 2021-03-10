@@ -9,6 +9,9 @@ from .forms import QuestionForm, AnswerForm
 # 페이징 기능 구현
 from django.core.paginator import Paginator
 
+# 로그인이 필요한 함수에 @login_required 애너테이션 적용하기
+from django.contrib.auth.decorators import login_required
+
 
 def index(request):
 
@@ -52,12 +55,15 @@ def detail(request, question_id):
 #     """
 #     model = Question
 
+# AnonymousUser로 인한 오류 @login_required 애너테이션을 사용하여 수정
+@login_required(login_url='common:login')
 def answer_create(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     if request.method == "POST":
         form = AnswerForm(request.POST)
         if form.is_valid():
             answer = form.save(commit=False)
+            answer.author = request.user  # 추가한 속성 author 적용
             answer.create_date = timezone.now()
             answer.question = question
             answer.save()
@@ -70,7 +76,10 @@ def answer_create(request, question_id):
 # URL 매핑에 의해 실행될 views.question_create 함수를 작성
 # {'form': form}은 템플릿에서 폼 엘리먼트를 생성할 때 사용
 
+# AnonymousUser로 인한 오류 @login_required 애너테이션을 사용하여 수정
 
+
+@login_required(login_url='common:login')
 def question_create(request):
     """
     pybo 질문등록
@@ -101,6 +110,7 @@ def question_create(request):
         form = QuestionForm(request.POST)
         if form.is_valid():
             question = form.save(commit=False)
+            question.author = request.user  # 추가한 속성 author 적용
             question.create_date = timezone.now()
             question.save()
             return redirect('pybo:index')
