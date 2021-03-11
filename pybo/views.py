@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.views import generic
 
-from .models import Question
+from .models import Question, Answer
 from django.utils import timezone
 from .forms import QuestionForm, AnswerForm
 
@@ -11,6 +11,9 @@ from django.core.paginator import Paginator
 
 # 로그인이 필요한 함수에 @login_required 애너테이션 적용하기
 from django.contrib.auth.decorators import login_required
+
+# 메시지 출력
+from django.contrib import messages
 
 
 def index(request):
@@ -119,3 +122,94 @@ def question_create(request):
 
     context = {'form': form}
     return render(request, 'pybo/question_form.html', context)
+
+
+@login_required(login_url='common:login')
+def question_modify(request, question_id):
+    """
+    pybo 질문수정
+    """
+    """
+    question_modify 함수는 로그인한 사용자(request.user)와 수정하려는 글쓴이(question.author)가 다르면 '수정권한이 없습니다'라는 오류가 발생하도록 작성
+    - '수정권한이 없습니다' 오류를 발생시키기 위해 messages 모듈을 이용했다.
+    - messages 모듈은 장고가 제공하는 기능으로 오류를 임의로 발생시키고 싶은 경우에 사용한다. 
+      이때 임의로 발생시킨 오류는 폼 필드와 관련이 없으므로 넌필드 오류에 해당된다.
+    """
+    """
+    질문 상세 화면에서 <수정>을 누르면 /pybo/question/modify/2/ 페이지가 GET 방식으로 호출되어 질문 수정 화면이 나타나고, 
+    질문 수정 화면에서 <저장하기>를 누르면 /pybo/question/modify/2/ 페이지가 POST 방식으로 호출되어 데이터 수정이 이뤄진다.
+    - 데이터 저장 시 form 엘리먼트에 action 속성이 없으면 현재의 페이지로 폼을 전송한다.
+    - 질문 수정에서 사용한 템플릿은 질문 등록 시 사용한 pybo/question_form.html 파일을 그대로 사용한다.
+    """
+    question = get_object_or_404(Question, pk=question_id)
+    if request.user != question.author:
+        messages.error(request, '수정권한이 없습니다')
+        return redirect('pybo:detail', question_id=question.id)
+
+    if request.method == "POST":
+        # [질문 수정을 위해 값 덮어쓰기]
+        form = QuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.author = request.user
+            question.modify_date = timezone.now()  # [질문 수정일시를 현재일시로 저장]
+            question.save()
+            return redirect('pybo:detail', question_id=question.id)
+    else:
+        # [질문 수정 화면에 기존 제목, 내용 반영]
+        form = QuestionForm(instance=question)
+    context = {'form': form}
+    return render(request, 'pybo/question_form.html', context)
+
+
+@login_required(login_url='common:login')
+def question_delete(request, question_id):
+    """
+    pybo 질문삭제
+    """
+    """
+    question_delete 함수 역시 로그인이 필요하므로 @login_required 애너테이션을 적용하고 로그인한 사용자와 글쓴이가 동일한 경우에만 삭제할 수 있도록 했다.
+    """
+    question = get_object_or_404(Question, pk=question_id)
+    if request.user != question.author:
+        messages.error(request, '삭제권한이 없습니다')
+        return redirect('pybo:detail', question_id=question.id)
+    question.delete()
+    return redirect('pybo:index')
+
+
+@login_required(login_url='common:login')
+def answer_modify(request, answer_id):
+    """
+    pybo 답변수정
+    """
+    answer = get_object_or_404(Answer, pk=answer_id)
+    if request.user != answer.author:
+        messages.error(request, '수정권한이 없습니다')
+        return redirect('pybo:detail', question_id=answer.question.id)
+
+    if request.method == "POST":
+        form = AnswerForm(request.POST, instance=answer)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.author = request.user
+            answer.modify_date = timezone.now()
+            answer.save()
+            return redirect('pybo:detail', question_id=answer.question.id)
+    else:
+        form = AnswerForm(instance=answer)
+    context = {'answer': answer, 'form': form}
+    return render(request, 'pybo/answer_form.html', context)
+
+
+@login_required(login_url='common:login')
+def answer_delete(request, answer_id):
+    """
+    pybo 답변삭제
+    """
+    answer = get_object_or_404(Answer, pk=answer_id)
+    if request.user != answer.author:
+        messages.error(request, '삭제권한이 없습니다')
+    else:
+        answer.delete()
+    return redirect('pybo:detail', question_id=answer.question.id)

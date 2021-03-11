@@ -6,6 +6,18 @@
 {% block content %}
 
 <div class="container my-3">
+	<!-- 사용자오류 표시 -->
+	<!-- 물론 수정은 로그인 한 사용자와 글 작성자가 동일한 경우에만 가능하기 때문에 이 오류가 표시될 일은 없을 것이다. 
+		하지만 비 정상적인 방법으로 질문을 수정을 하거나 상세화면에서 모든 로그인 사용자에게 <수정> 버튼을 노출한다면 
+		오류를 보여주어야 하므로 필요한 부분이다. -->
+	{% if messages %}
+	<div class="alert alert-danger my-3" role="alert">
+		{% for message in messages %}
+			<strong>{{ message.tags }}</strong>
+			<ul><li>{{ message.message }}</li></ul>
+		{% endfor %}
+	</div>
+	{% endif %}
 	<h2 class="border-bottom py-2">{{ question.subject }}</h2>
 	<div class="card my-3">
 		<div class="card-body">
@@ -13,11 +25,33 @@
 				{{ question.content }}
 			</div>
 			<div class="d-flex justify-content-end">
+				<!-- 작성일시 왼쪽에 수정일시 추가 -->
+				{% if question.modify_date %}
+        <div class="badge badge-light p-2 text-left mx-3">
+					<div class="mb-2">modified at</div>
+					<div>{{ question.modify_date }}</div>
+        </div>
+        {% endif %}
 				<div class="badge badge-light p-2 text-left">
 					<div class="mb-2">{{ question.author.username }}</div>
 					<div>{{ question.create_date }}</div>
 				</div>
 			</div>
+			<!-- 질문 수정 / 삭제 버튼은 로그인한 사용자와 글쓴이가 같은 경우에만 보여야 하므로 -->
+			{% if request.user == question.author %}
+        <div class="my-3">
+          <a href="{% url 'pybo:question_modify' question.id  %}" class="btn btn-sm btn-outline-secondary">
+						수정
+					</a>
+					<!-- <삭제> 버튼은 <수정> 버튼과는 달리 href 속성값을 "#"로 설정했다. 
+						그리고 삭제를 실행할 URL을 얻기 위해 data-uri 속성을 추가하고, 
+						<삭제> 버튼이 눌리는 이벤트를 확인할 수 있도록 class 속성에 "delete" 항목을 추가해 주었다. -->
+					<!-- data-uri 속성은 제이쿼리에서 $(this).data('uri')와 같이 사용하여 그 값을 얻을 수 있다. -->
+					<a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'pybo:question_delete' question.id  %}">
+						삭제
+					</a>
+        </div>
+      {% endif %}
 		</div>
 	</div>
 	<!-- 등록된 답변 표시하기 -->
@@ -31,11 +65,33 @@
 				{{ answer.content }}
 			</div>
 			<div class="d-flex justify-content-end">
+					<!-- 작성일시 왼쪽에 수정일시 추가 -->
+				{% if answer.modify_date %}
+				<div class="badge badge-light p-2 text-left mx-3">
+					<div class="mb-2">modified at</div>
+					<div>{{ answer.modify_date }}</div>
+				</div>
+				{% endif %}
 				<div class="badge badge-light p-2 text-left">
 					<div class="mb-2">{{ answer.author.username }}</div>
 					<div>{{ answer.create_date }}</div>
 				</div>
 			</div>
+			<!-- 답변 수정 / 삭제 버튼은 로그인한 사용자와 글쓴이가 같은 경우에만 보여야 하므로 -->
+			{% if request.user == answer.author %}
+        <div class="my-3">
+					<a href="{% url 'pybo:answer_modify' answer.id  %}" class="btn btn-sm btn-outline-secondary">
+						수정
+					</a>
+					<!-- <삭제> 버튼은 <수정> 버튼과는 달리 href 속성값을 "#"로 설정했다. 
+					그리고 삭제를 실행할 URL을 얻기 위해 data-uri 속성을 추가하고, 
+					<삭제> 버튼이 눌리는 이벤트를 확인할 수 있도록 class 속성에 "delete" 항목을 추가해 주었다. -->
+					<!-- data-uri 속성은 제이쿼리에서 $(this).data('uri')와 같이 사용하여 그 값을 얻을 수 있다. -->
+					<a href="#" class="delete btn btn-sm btn-outline-secondary " data-uri="{% url 'pybo:answer_delete' answer.id  %}">
+						삭제
+					</a>
+        </div>
+      {% endif %}
 		</div>
 	</div>
 	{% endfor %}
@@ -57,10 +113,26 @@
 		{% endif %}
 		<div class="form-group">
 			<textarea {% if not user.is_authenticated %}disabled{% endif %}
-              name="content" id="content" class="form-control" rows="10"></textarea>
+              name="content" id="content" class="form-control" rows="10">
+			</textarea>
 		</div>
 		<input type="submit" value="답변등록" class="btn btn-primary" />
 	</form>
 </div>
 
+{% endblock %}
+
+{% block script %}
+	<!-- <삭제> 버튼을 누르면 확인 창이 나타나고, 확인 창에서 <확인> 버튼을 누르면 앞서 입력했던 data-uri 속성값으로 URL이 호출된다. 
+		<취소> 버튼을 누르면 아무 일도 발생하지 않는다. -->
+	<!-- $(document).ready(function())은 화면이 로드된 다음 자동으로 호출되는 제이쿼리 함수이다. -->
+	<script type='text/javascript'>
+		$(document).ready(function() {
+			$(".delete").on('click', function() {
+				if(confirm("정말로 삭제하시겠습니까?")) {
+					location.href = $(this).data('uri');
+				}
+			});
+		});
+	</script>
 {% endblock %}
