@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings  # 추가
 from django.contrib import admin
 from django.urls import path, include
 
@@ -24,3 +25,10 @@ urlpatterns = [
     path('common/', include('common.urls')),
     path('', views.index, name='index'),  # '/' 에 해당되는 path
 ]
+
+# 디버그 툴바 설정
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]

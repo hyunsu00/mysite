@@ -128,3 +128,20 @@ STATICFILES_DIRS = [
 # 로그인/로그아웃 성공후 이동하는 URL
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# 디버그 툴바 설정
+if DEBUG:
+    INTERNAL_IPS = ('127.0.0.1',)
+
+    INSTALLED_APPS += (
+        'debug_toolbar',
+    )
+
+    MIDDLEWARE += (
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    )
+
+else:
+    ALLOWED_HOSTS += (
+        '127.0.0.1',
+    )
