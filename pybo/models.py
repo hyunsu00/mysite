@@ -40,3 +40,11 @@ class Answer(models.Model):
     # blank=True는 form.is_valid()를 통한 입력 폼 데이터 검사 시 값이 없어도 된다는 의미이다.
     # 즉, null=True, blank=True는 어떤 조건으로든 값을 비워둘 수 있음을 의미한다.
     modify_date = models.DateTimeField(null=True, blank=True)
+
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    create_date = models.DateTimeField()
+    modify_date = models.DateTimeField(null=True, blank=True)
+    question = models.ForeignKey(Question, null=True, blank=True, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answer, null=True, blank=True, on_delete=models.CASCADE)
