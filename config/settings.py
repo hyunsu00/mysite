@@ -141,6 +141,15 @@ if DEBUG:
         'debug_toolbar.middleware.DebugToolbarMiddleware',
     )
 
+    # 이 코드는 장고 디버그 툴바가 안보이는 문제를 피하기 위해 추가되었습니다.
+    # Failed to load module script: The server responded with a non-JavaScript MIME type of "text/plain".
+    # Strict MIME type checking is enforced for module scripts per HTML spec in django tool bar
+    import mimetypes
+    if mimetypes.guess_type("toolbar.js")[0] != "application/javascript":
+        print("MIME : {0}".format(mimetypes.guess_type("toolbar.js")))
+        mimetypes.add_type("application/javascript", ".js", True)
+    else:
+        print("MIME : application/javascript")
 else:
     ALLOWED_HOSTS += (
         '127.0.0.1',
