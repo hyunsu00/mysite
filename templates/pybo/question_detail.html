@@ -3,6 +3,10 @@
 	그리고 % block content %와 % endblock % 사이에 question_detail.html 파일에서만 사용할 내용을 작성했다. 
 	이제 question_detail.html은 base.html을 상속받았으므로 표준 HTML 구조를 갖추게 되었다. -->
 {% extends 'base.html' %}
+
+<!-- 마크다운 필터 적용 -->
+{% load pybo_filter %}
+
 {% block content %}
 
 <div class="container my-3">
@@ -33,8 +37,8 @@
 		<div class="col-11"> <!-- 질문영역 -->
 			<div class="card">
 				<div class="card-body">
-					<div class="card-text" style="white-space: pre-line">
-						{{ question.content }}
+					<div class="card-text">
+						{{ question.content|mark }}
 					</div>
 					<div class="d-flex justify-content-end">
 						<!-- 작성일시 왼쪽에 수정일시 추가 -->
@@ -122,8 +126,8 @@
 			<div class="col-11">  <!-- 답변영역 -->
 				<div class="card">
 					<div class="card-body">
-						<div class="card-text" style="white-space: pre-line">
-							{{ answer.content }}
+						<div class="card-text">
+							{{ answer.content|mark }}
 						</div>
 						<div class="d-flex justify-content-end">
 							<!-- 작성일시 왼쪽에 수정일시 추가 -->
