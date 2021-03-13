@@ -1,7 +1,7 @@
 # urls.py
 from django.urls import path  # django.urls 패키지에서 path 모듈 가져옴
 
-from .views import base_views, question_views, answer_views, comment_views
+from .views import base_views, question_views, answer_views, comment_views, vote_views
 
 app_name = "pybo"  # 네임스페이스 정의
 
@@ -37,4 +37,9 @@ urlpatterns = [
     path("comment/create/answer/<int:answer_id>/", comment_views.comment_create_answer, name="comment_create_answer"),  # 댓글 등록
     path("comment/modify/answer/<int:comment_id>/", comment_views.comment_modify_answer, name="comment_modify_answer"),  # 댓글 수정
     path("comment/delete/answer/<int:comment_id>/", comment_views.comment_delete_answer, name="comment_delete_answer"),  # 댓글 삭제
+    #
+    # vote_views.py
+    #
+    path("vote/question/<int:question_id>/", vote_views.vote_question, name="vote_question"),  # 질문 추천 URL 매핑
+    path("vote/answer/<int:answer_id>/", vote_views.vote_answer, name="vote_answer"),  # 답변 추천 URL 매핑
 ]
