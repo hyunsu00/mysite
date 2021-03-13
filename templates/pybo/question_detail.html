@@ -73,6 +73,7 @@
 								또 댓글 글쓴이와 로그인한 사용자가 같으면 '수정', '삭제' 링크가 보이도록 했다. 
 								for 문 바깥쪽에는 댓글을 작성할 수 있는 '댓글 추가 ..' 링크도 추가했다.  -->
 							{% for comment in question.comment_set.all %}
+								<a name="comment_{{ comment.id }}"></a> <!-- 댓글ID로 스크롤 위치시킴 -->
 								<!-- div class="comment py-2 text-muted"에서 comment는 styles.css의 글씨를 작게 표시하기 위한 설정이다. -->
 								<div class="comment py-2 text-muted">
 									<span style="white-space: pre-line;">{{ comment.content }}</span>
@@ -109,6 +110,7 @@
 		{{question.answer_set.count}}개의 답변이 있습니다.
 	</h5>
 	{% for answer in question.answer_set.all %}
+		<a name="answer_{{ answer.id }}"></a> <!-- 답변ID로 스크롤 위치시킴 -->
 		<!-- 답변 추천 버튼 만들기 -->
 		<div class="row my-3">
 			<div class="col-1">  <!-- 추천영역 -->
@@ -157,6 +159,7 @@
 						{% if answer.comment_set.count > 0 %}
 							<div class="mt-3">
 							{% for comment in answer.comment_set.all %}
+								<a name="comment_{{ comment.id }}"></a> <!-- 댓글ID로 스크롤 위치시킴 -->
 								<div class="comment py-2 text-muted">
 									<span style="white-space: pre-line;">{{ comment.content }}</span>
 									<span>
