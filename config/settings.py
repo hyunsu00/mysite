@@ -131,7 +131,7 @@ LOGOUT_REDIRECT_URL = "/"
 
 # 디버그 툴바 설정
 if DEBUG:
-    INTERNAL_IPS = ("127.0.0.1",)
+    INTERNAL_IPS = ("127.0.0.1", "52.78.36.85")
     INSTALLED_APPS += ("debug_toolbar",)
     MIDDLEWARE += ("debug_toolbar.middleware.DebugToolbarMiddleware",)
 
