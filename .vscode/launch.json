@@ -5,15 +5,28 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Python: Django",
+			"name": "Python: Django Local",
 			"type": "python",
 			"request": "launch",
 			"program": "${workspaceFolder}\\manage.py",
 			"args": [
-				"runserver"
+				"runserver",
+				"--settings=config.settings.local"
 			],
 			"django": true,
 			"justMyCode": false // 장고 패키지코드를 보기 위해서 추가한다.
-		}
+		},
+		{
+			"name": "Python: Django Lightsail",
+			"type": "python",
+			"request": "launch",
+			"program": "${workspaceFolder}/manage.py",
+			"args": [
+				"runserver",
+				"--settings=config.settings.prod"
+			],
+			"django": true,
+			"justMyCode": false // 장고 패키지코드를 보기 위해서 추가한다.
+		},
 	]
 }
