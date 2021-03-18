@@ -33,3 +33,8 @@ if settings.DEBUG:
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
     ]
+
+# handler404 변수는 좀 특별한 변수이다. 
+# handler404 변수를 설정하면 404 오류 발생 시 사용자가 정의한 뷰 함수를 호출하게 된다. 
+# 따라서 404 오류가 발생하면 위에 정의한 대로 common/views.py 파일의 page_not_found 함수가 호출된다.
+handler404 = 'common.views.page_not_found'

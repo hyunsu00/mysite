@@ -27,3 +27,12 @@ def signup(request):
     else:
         form = UserForm()
     return render(request, 'common/signup.html', {'form': form})
+
+# page_not_found 함수는 request 외에 exception이라는 매개변수를 하나 더 받음에 주의하자.
+# exception 매개변수는 오류의 내용을 담고 있는 변수이다. 만약 오류의 내용을 화면에 보여 주고 싶다면 exception의 값을 읽어서 화면에 보여줄 수 있다.
+def page_not_found(request, exception):
+    """
+    404 Page not found
+    """
+    return render(request, 'common/404.html', {})
+
