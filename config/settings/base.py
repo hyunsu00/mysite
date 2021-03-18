@@ -139,3 +139,82 @@ if mimetypes.guess_type("toolbar.js")[0] != "application/javascript":
     mimetypes.add_type("application/javascript", ".js", True)
 else:
     print("MIME : application/javascript")
+
+# 로깅설정
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[{server_time}] {message}',
+            'style': '{',
+        },
+        # 앞으로 생성할 로그 파일에 사용할 포맷터 standard를 다음과 같이 추가
+        # asctime - 현재 시간, levelname - 로그의 레벨(debug, info, warning, error, critical)
+        # name - 로거명, message - 출력 내용
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        },
+        'django.server': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'django.server',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        # handlers에 file 핸들러를 다음과 같이 추가
+        # level - 출력 레벨로 INFO를 사용, filters - DEBUG=False인 운영 환경에서 사용
+        # class - 파일 핸들러로 RotatingFileHandler 사용, RotatingFileHandler는 파일 크기가 설정한 크기보다 
+        # 커지면 파일 뒤에 인덱스를 붙여서 백업한다. 이 핸들러의 장점은 로그가 무한히 증가되더라도 일정 개수의 
+        # 파일로 롤링(Rolling)되기 때문에 로그 파일이 너무 커져서 디스크가 꽉 차는 위험을 방지할 수 있다.
+        # filename - 로그 파일명은 logs 디렉터리에 mysite.log로 설정
+        # maxBytes - 로그 파일 크기는 5MB로 설정
+        # backupCount - 롤링되는 파일의 개수를 의미한다. 총 5개의 로그 파일로 유지되도록 설정했다.
+        # formatter - 포맷터는 standard를 사용
+        'file': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs/mysite.log',
+            'maxBytes': 1024*1024*5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'standard',
+        },
+    },
+    'loggers': {
+        'django': {
+            # django 로거의 handlers에 file 핸들러를 다음과 같이 추가
+            'handlers': ['console', 'mail_admins', 'file'],
+            'level': 'INFO',
+        },
+        'django.server': {
+            'handlers': ['django.server'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        # pybo 로거 등록하기
+        'pybo': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+    }
+}
