@@ -13,3 +13,15 @@ STATICFILES_DIRS = []
 
 DEBUG = False
 
+# PostgreSQL 데이터베이스 적용
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # 데이터베이스에 접속에 사용되는 모듈
+        'NAME': 'pybo', # 데이터베이스 이름
+        'USER': 'dbmasteruser', # 사용자 이름
+        'PASSWORD': 'ahk725##', # 암호
+        'HOST': 'ls-7ce6ca9b9e3a671ceab7515c589a14e10b80a23b.cau7syjsk1on.ap-northeast-2.rds.amazonaws.com', # 데이터베이스 주소
+        'PORT': '5432',
+    }
+}
+
